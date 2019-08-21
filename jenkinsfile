@@ -1,0 +1,32 @@
+pipeline {
+  agent {
+    node {
+      label 'merlin'
+    }  
+  }
+  stages {
+    stage ("check-commit") {
+      steps {
+        sh "[ `git rev-list --left-right --count remotes/origin/release..remotes/origin/${env.BRANCH_NAME} | cut -f1` -eq 0 ]"
+      }
+    }
+    stage ("build") {
+      steps {
+        script { 
+          dir("trunk/build") {
+            sh "echo step_build"
+          }
+        }
+      }    
+    }
+    stage ("test") {
+      steps {
+        script {
+          dir("trunk/build") {
+            sh "echo step_test"
+          }
+        }
+      }
+    }  
+  }
+}
